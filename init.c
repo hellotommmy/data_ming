@@ -59,7 +59,8 @@ void freq_episode_mining(){
             seq_traversed++;
         }
         print_list(Candidates[i]);
-        build_C_from_FEi(i);
+        if(i < MAX_SEQ_LEN - 1)//if last candidate collection, should not build further
+        	build_C_from_FEi(i);
         i++; 
     }
     time_t second_end = time(NULL);
