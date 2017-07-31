@@ -23,6 +23,12 @@ int count_sup(char *t, char *w){//kmp algo
     return count;
     
 }
+void print_database(){
+    extern stream_database SD;
+    int i;
+    for(i = 0; i < NUM_STREAM; i++)
+        printf("%s\n",SD[i]);
+}
 void print_node(lnode_ptr ptr){
     if(!ptr)
         ERROR_MSG(node does not exist)

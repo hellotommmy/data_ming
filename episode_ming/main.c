@@ -8,6 +8,7 @@ void generate_SD();
 char *cong_level_set[4] = {"n","l","m","h"};
 int main(){
     generate_SD();
+    print_database();
 	freq_episode_mining();
 
     return 0;

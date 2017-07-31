@@ -24,8 +24,8 @@ default: list1
 # To create the executable file count we need the object files
 # countwords.o, counter.o, and scanner.o:
 #
-list1:  list.o main.o util.o debug.o elem.o init.o
-	$(CC) $(CFLAGS) -o list1 list.o main.o util.o debug.o elem.o init.o
+list1:  list.o main.o util.o debug.o elem.o init.o file.o
+	$(CC) $(CFLAGS) -o list1 list.o main.o util.o debug.o elem.o init.o file.o
 
 # To create the object file countwords.o, we need the source
 # files countwords.c, scanner.h, and counter.h:
@@ -53,6 +53,8 @@ elem.o: elem.c
 
 init.o: init.c
 	$(CC) $(CFLAGS) -c init.c
+file.o: file.c head.h
+	$(CC) $(CFLAGS) -c file.c head.h
 # To start over from scratch, type 'make clean'.  This
 # removes the executable file, as well as old .o object
 # files and *~ backup files:

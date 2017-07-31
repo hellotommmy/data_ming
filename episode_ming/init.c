@@ -59,8 +59,10 @@ void freq_episode_mining(){
             if(cnode->data->sup < min_fr) {del_node(Candidates[i],cnode); free_node(cnode);}
             seq_traversed++;
         }
-        print_list(Candidates[i]);
-        if(i < MAX_SEQ_LEN - 1)//if last candidate collection, should not build further
+        if(isEmpty(Candidates[i]))
+            break;
+        print_list_file(Candidates[i]);
+        if(i < MAX_SEQ_LEN - 1)//if i == MAX - 1, should not build further
         	build_C_from_FEi(i);
         i++; 
     }

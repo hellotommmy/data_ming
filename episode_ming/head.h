@@ -9,9 +9,9 @@
 #define ERROR_MSG(msg) printf(#msg "\n");
 #define MAX_SEQ_LEN 8
 #define NUM_OF_CONG_LEVEL 4
-#define NUM_STREAM 900
-#define STREAM_LEN 288
-#define min_fr 10
+#define NUM_STREAM 7
+#define STREAM_LEN 7
+#define min_fr 3
 typedef char stream_database[NUM_STREAM + 1][STREAM_LEN + 1];
 //The basic record of a congestion sequence
 //does not include other important info such as
@@ -36,6 +36,7 @@ typedef struct{
 lnode_ptr make_node(elemType e);
 void print_node(lnode_ptr ptr);
 void print_list(linked_list *llptr);
+void print_database();
 //take care-- free node must precede setting ptr to NULL!
 void free_node(lnode_ptr ptr);
 elemType string_to_record(char *s);
@@ -50,5 +51,9 @@ void free_node(lnode_ptr ptr);
 void init();
 
 void freq_episode_mining();
+
+//file
+void print_list_file(linked_list *llptr);
+void print_node_file(lnode_ptr p);
 #endif
 
