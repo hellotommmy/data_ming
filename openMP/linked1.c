@@ -74,11 +74,18 @@ int main(int argc, char *argv[]) {
      p = init_list(p);
      head = p;
 	 int list_len = get_len(p);
+	 struct node *ptr_ary[list_len];
+	 int i;
+	 for(i = 0; i < list_len; i++)
+	 {
+	   ptr_ary[i] = p;
+	   p = p->next;
+	 }
      start = omp_get_wtime();
      {
-        while (p != NULL) {
-		   processwork(p);
-		   p = p->next;
+        #pragma omp parallel for
+        for(i = 0; i < list_len; i++){
+          processwork(ptr_ary[i]);
         }
      }
 
