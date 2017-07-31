@@ -14,18 +14,17 @@ struct node {
    int fibdata;
    struct node* next;
 };
-int get_len(struct node *p);
 
 int fib(int n) {
    int x, y;
    if (n < 2) {
       return (n);
    } else {
-
+   //#pragma omp task shared(x)
       x = fib(n - 1);
-
+   //   #pragma omp task shared(y)
       y = fib(n - 2);
-
+   //      #pragma omp taskwait
 	  return (x + y);
    }
 }
@@ -56,14 +55,7 @@ struct node* init_list(struct node* p) {
     p->next = NULL;
     return head;
 }
-int get_len(struct node *p){
-  int len = 0;
-  while(p){
-    p = p->next;
-    len++;
-  }
-  return len;
-}
+
 int main(int argc, char *argv[]) {
      double start, end;
      struct node *p=NULL;
@@ -76,21 +68,23 @@ int main(int argc, char *argv[]) {
  
      p = init_list(p);
      head = p;
-	 int list_len = get_len(p);
-	 struct node *ptr_ary[list_len];
-	 int i;
-	 for(i = 0; i < list_len; i++)
-	 {
-	   ptr_ary[i] = p;
-	   p = p->next;
-	 }
+
      start = omp_get_wtime();
      #pragma omp parallel
+     #pragma omp single
      {
-        #pragma omp for schedule(static,1)
-        for(i = 0; i < list_len; i++){
-          processwork(ptr_ary[i]);
-        }
+//        while (p != NULL) {
+//		   processwork(p);
+//		   p = p->next;
+ //       }
+       //printf("num of threads in single region:%d\n",omp_get_num_threads());
+       
+       for( ; p; p = p->next)
+       #pragma omp task firstprivate(p)
+         {
+           //printf("num of threads in task region:%d\n",omp_get_num_threads());
+           processwork(p);
+         }
      }
 
      end = omp_get_wtime();
