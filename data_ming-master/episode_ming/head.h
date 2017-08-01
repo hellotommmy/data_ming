@@ -9,8 +9,8 @@
 #define ERROR_MSG(msg) printf(#msg "\n");
 #define MAX_SEQ_LEN 8
 #define NUM_OF_CONG_LEVEL 4
-#define NUM_STREAM 7
-#define STREAM_LEN 7
+#define NUM_STREAM 855
+#define STREAM_LEN 288
 #define min_fr 3
 typedef char stream_database[NUM_STREAM + 1][STREAM_LEN + 1];
 //The basic record of a congestion sequence
