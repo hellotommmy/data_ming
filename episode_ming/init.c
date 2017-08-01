@@ -41,17 +41,36 @@ void freq_episode_mining(){
     lnode_ptr cnode;
     lnode_ptr temp_cnode;
     int length;
+    extern stream_database SD;
+    int temp;
     //testing github
-    while(i <MAX_SEQ_LEN && !isEmpty(Candidates[i]) ){      
-        
+    while(i <MAX_SEQ_LEN && !isEmpty(Candidates[i]) ){   
+        length = Candidates[i]->len;
+        lnode_ptr ugly_array[length];   
+        for(cnode = Candidates[i]->head, seq_traversed = 0; seq_traversed < length; cnode = cnode->next){
+            ugly_array[seq_traversed] = cnode;
+            seq_traversed++;
+        }
+        #pragma omp parallel for collapse(2) default(none) shared(SD,length,ugly_array) private(temp,c,s)
         for(stream = 0; stream < NUM_STREAM; stream++){
+            for(seq_traversed = 0; seq_traversed < length; seq_traversed++){
+                c = ugly_array[seq_traversed]->data->seq;
+                s = SD[stream];
+                temp = count_sup(s,c);
+                #pragma omp critical
+                {
+                    ugly_array[seq_traversed]->data->sup += temp;
+                } 
+            }
+        }
+/*        for(stream = 0; stream < NUM_STREAM; stream++){
             s = get_elem_SD(stream);
             for(cnode = get_head(Candidates[i]), seq_traversed = 0, length = get_length(Candidates[i]); seq_traversed < length; cnode = cnode->next){
                 c = get_string(cnode);
                 cnode->data->sup += count_sup(s,c);
                 seq_traversed++;
             }    
-        }
+        }*/
         //identify frequent episodes
         for(cnode = get_head(Candidates[i]), seq_traversed = 0; seq_traversed < length; cnode = temp_cnode){
             c = get_string(cnode);
@@ -84,7 +103,7 @@ void build_C_from_FEi(int i){
         seq_traversed_i++;
     }
 //    printf("1");
-//    #pragma omp parallel for collapse(2) default(none) shared(len,Candidates,i) private(ci,cj,s) shared(ugly_array)
+    #pragma omp parallel for collapse(2) default(none) shared(len,Candidates,i) private(ci,cj,s) shared(ugly_array)
     for(seq_traversed_i = 0; seq_traversed_i < len; seq_traversed_i++){
         for(seq_traversed_j = 0; seq_traversed_j < len; seq_traversed_j++){
 //        printf("thread num:%d\n",omp_get_thread_num());
@@ -95,7 +114,7 @@ void build_C_from_FEi(int i){
             cj = ugly_array[seq_traversed_j]->data->seq;
             s = linkable(ci,cj);
             if(s){
-//            #pragma omp critical
+            #pragma omp critical
             {
                 ins_first(Candidates[i + 1],make_node(string_to_record(s)));
             }
