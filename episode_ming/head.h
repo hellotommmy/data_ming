@@ -5,6 +5,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <assert.h>
+#include <omp.h>
 #include <time.h>
 #define ERROR_MSG(msg) printf(#msg "\n");
 #define MAX_SEQ_LEN 8

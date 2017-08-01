@@ -11,8 +11,8 @@
 #  -Wall turns on most, but not all, compiler warnings
 #
 # for C++ define  CC = g++
-CC = gcc
-CFLAGS  = -g -Wall #-DTEST_LIST
+CC = g++
+CFLAGS  = -g -Wall -fopenmp#-DTEST_LIST
 
 # typing 'make' will invoke the first target entry in the file 
 # (in this case the default target entry)

@@ -43,7 +43,7 @@ void freq_episode_mining(){
     int length;
     //testing github
     while(i <MAX_SEQ_LEN && !isEmpty(Candidates[i]) ){      
-
+        
         for(stream = 0; stream < NUM_STREAM; stream++){
             s = get_elem_SD(stream);
             for(cnode = get_head(Candidates[i]), seq_traversed = 0, length = get_length(Candidates[i]); seq_traversed < length; cnode = cnode->next){
@@ -74,24 +74,34 @@ void build_C_from_FEi(int i){
         return;
     int len = get_length(Candidates[i]);
     lnode_ptr cnode_i;
-    lnode_ptr cnode_j;
+//    lnode_ptr cnode_j;
     char *s;
     char *ci,*cj;
     int seq_traversed_i,seq_traversed_j;
-    for(cnode_i = get_head(Candidates[i]), seq_traversed_i = 0; seq_traversed_i < len; cnode_i = cnode_i->next){
+    lnode_ptr ugly_array[len];
+    for(cnode_i = Candidates[i]->head, seq_traversed_i = 0; seq_traversed_i < len; cnode_i = cnode_i->next){
+        ugly_array[seq_traversed_i] = cnode_i;
         seq_traversed_i++;
-        for(cnode_j = get_head(Candidates[i]), seq_traversed_j = 0; seq_traversed_j < len; cnode_j = cnode_j->next){
-            seq_traversed_j++;
-            if(cnode_i == cnode_j)
+    }
+//    printf("1");
+    #pragma omp parallel for collapse(2) default(none) shared(len,Candidates,i) private(ci,cj,s) shared(ugly_array)
+    for(seq_traversed_i = 0; seq_traversed_i < len; seq_traversed_i++){
+        for(seq_traversed_j = 0; seq_traversed_j < len; seq_traversed_j++){
+//        printf("thread num:%d\n",omp_get_thread_num());
+            if(seq_traversed_i == seq_traversed_j)
                 continue;
-            ci = get_string(cnode_i); cj = get_string(cnode_j);
+            
+            ci = ugly_array[seq_traversed_i]->data->seq;
+            cj = ugly_array[seq_traversed_j]->data->seq;
             s = linkable(ci,cj);
-            if(s){//if not null--two sequences can merge to form a longer sequence
+            if(s){
+            #pragma omp critical
+            {
                 ins_first(Candidates[i + 1],make_node(string_to_record(s)));
             }
+            }
         }
-    }
-    
+    } 
 }
 char * get_string(lnode_ptr node){
     return node->data->seq;
