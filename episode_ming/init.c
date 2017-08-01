@@ -84,7 +84,7 @@ void build_C_from_FEi(int i){
         seq_traversed_i++;
     }
 //    printf("1");
-    #pragma omp parallel for collapse(2) default(none) shared(len,Candidates,i) private(ci,cj,s) shared(ugly_array)
+//    #pragma omp parallel for collapse(2) default(none) shared(len,Candidates,i) private(ci,cj,s) shared(ugly_array)
     for(seq_traversed_i = 0; seq_traversed_i < len; seq_traversed_i++){
         for(seq_traversed_j = 0; seq_traversed_j < len; seq_traversed_j++){
 //        printf("thread num:%d\n",omp_get_thread_num());
@@ -95,7 +95,7 @@ void build_C_from_FEi(int i){
             cj = ugly_array[seq_traversed_j]->data->seq;
             s = linkable(ci,cj);
             if(s){
-            #pragma omp critical
+//            #pragma omp critical
             {
                 ins_first(Candidates[i + 1],make_node(string_to_record(s)));
             }
